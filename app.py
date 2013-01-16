@@ -1,5 +1,7 @@
 import os
 import pymongo
+import operator
+
 from bson.objectid import ObjectId
 from flask import Flask
 
@@ -55,7 +57,9 @@ def testdb():
 
 	collection.remove({})
 	
-	return str1
+	best = max(ing.iteritems(), key=operator.itemgetter(1))[0]
+
+	return best + " is your best option."
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
