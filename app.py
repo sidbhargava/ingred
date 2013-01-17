@@ -35,31 +35,34 @@ def testdb():
 		'type': 'appetizer',
 		'Ingredients': ['lettuce','lemon','crutons','bacon'],
 	})
-		
-	str1 = raw_input("enter ingredients separated by commas: ")
-	input_list = str1.split(',')
-
-	ing = {}
-	count = 0
 	
-	for i in input_list:
-		finder = collection.find({"Ingredients": i})
-		if finder.count() > 0:
-			recipe = finder.distinct("recipe")
-			for j in recipe:
-				if j not in ing:
-					ing[str(j)] = 0
-				temp = 1/float(len(collection.find({"recipe":j}).distinct("Ingredients")))
-				ing[str(j)] += temp
+	while True:
+		str1 = raw_input("What to do? (type one of the following: search,insert,exit): ")
+		if str1 == "search":
+			str2 = raw_input("enter ingredients separated by commas: ")
+			input_list = str2.split(',')
+			ing = {}
+			for i in input_list:
+				finder = collection.find({"Ingredients": i})
+				if finder.count() > 0:
+					recipe = finder.distinct("recipe")
+					for j in recipe:
+						if j not in ing:
+							ing[str(j)] = 0
+							temp = 1/float(len(collection.find({"recipe":j}).distinct("Ingredients")))
+							ing[str(j)] += temp
+				else:
+					print 'cannot find: ' + i + " in MongoDB"
+			print ing
+			best = max(ing.iteritems(), key=operator.itemgetter(1))[0]
+			print best + " is your best option."
+		elif str1 == "insert":
+			print "function not created"
+		elif str1 == "exit":
+			collection.remove({})
+			return "Thank you for using!"
 		else:
-			print 'cannot find: ' + i + " in MongoDB"
-	print ing
-
-	collection.remove({})
-	
-	best = max(ing.iteritems(), key=operator.itemgetter(1))[0]
-
-	return best + " is your best option."
+			print "not a valid choice"
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
