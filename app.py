@@ -52,7 +52,7 @@ def testdb():
 				temp = 1/float(len(collection.find({"recipe":j}).distinct("Ingredients")))
 				ing[str(j)] += temp
 		else:
-			print 'cannot find ing: ' + i
+			print 'cannot find: ' + i + " in MongoDB"
 	print ing
 
 	collection.remove({})
